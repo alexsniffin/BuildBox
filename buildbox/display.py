@@ -1,7 +1,9 @@
 #!/usr/bin/python
 
 from i2clibraries import i2c_lcd
+from user import User
 import time
+import json
 import socket
 import urllib.request
 import traceback
@@ -15,24 +17,34 @@ lcd.command(lcd.CMD_Display_Control | lcd.OPT_Enable_Display)
 
 lcd.backLightOn()
 
-def internet_on():
+def checkApiStatus():
 	try:
-		urllib.request.urlopen('http://www.google.com', timeout=2)
+		urllib.request.urlopen('http://wwww.build-box.test.herokuapp.com', timeout=5)
 		return True
 	except Exception:
 		traceback.print_exc()
 		return False
 
-while True:
-	lcd.clear()
-	if internet_on():
-		lcd.writeString([(s.connect(('8.8.8.8', 80)), s.getsockname()[0], s.close()) for s in [socket.socket(socket.AF_INET, socket.SOCK_DGRAM)]][0][1])
-		lcd.setPosition(2, 0) 
-		lcd.writeString("Connected as    ")
-		time.sleep(2.5)
-		lcd.setPosition(2, 0)
-		lcd.writeString("Status: Good    ")
-	else:
-		lcd.writeString("Error connecting")
-	
-	time.sleep(5)
+if checkApiStatus():
+	users = []
+
+	with open('data.json') as data_file:
+		data = json.load(data_file)
+
+	for user in len(data['users']):
+		users.append(User(data['users']['id'], data['users']['name']), data['users']['attempts'], data['users']['succeeds'], data['users']['fails'])
+		print users[0].name
+
+	while True:
+		lcd.clear()
+		if checkApiStatus():
+			lcd.writeString([(s.connect(('8.8.8.8', 80)), s.getsockname()[0], s.close()) for s in [socket.socket(socket.AF_INET, socket.SOCK_DGRAM)]][0][1])
+			lcd.setPosition(2, 0)
+			lcd.writeString("Connected as    ")
+			time.sleep(2.5)
+			lcd.setPosition(2, 0)
+			lcd.writeString("Status: Good    ")
+		else:
+			lcd.writeString("Error connecting")
+
+		time.sleep(5)
