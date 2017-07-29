@@ -25,25 +25,23 @@ def checkApiStatus():
 		traceback.print_exc()
 		return False
 
+def writeToScreen(msg):
+	return msg // TODO
+
 if checkApiStatus():
 	users = []
 
-	with open('data.json') as data_file:
+	with open('userStats.json') as data_file:
 		data = json.load(data_file)
 
-	for user in len(data['users']):
-		users.append(User(data['users']['id'], data['users']['name']), data['users']['attempts'], data['users']['succeeds'], data['users']['fails'])
-		print users[0].name
+	for user in range(0, len(data['users'])):
+		users.append(User(data['users'][user]['id'], data['users'][user]['name'], data['users'][user]['attempts'], data['users'][user]['succeeds'], data['users'][user]['fails']))
 
 	while True:
 		lcd.clear()
 		if checkApiStatus():
-			lcd.writeString([(s.connect(('8.8.8.8', 80)), s.getsockname()[0], s.close()) for s in [socket.socket(socket.AF_INET, socket.SOCK_DGRAM)]][0][1])
-			lcd.setPosition(2, 0)
-			lcd.writeString("Connected as    ")
-			time.sleep(2.5)
-			lcd.setPosition(2, 0)
-			lcd.writeString("Status: Good    ")
+			lcd.setPosition(1, 0)
+			lcd.writeString(users[0].name)
 		else:
 			lcd.writeString("Error connecting")
 
