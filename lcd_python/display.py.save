@@ -3,8 +3,7 @@
 from i2clibraries import i2c_lcd
 import time
 import socket
-import urllib.request
-import traceback
+import urllib
 
 # Configuration parameters
 # I2C Address, Port, Enable pin, RW pin, RS pin, Data 4 pin, Data 5 pin, Data 6 pin, Data 7 pin, Backlight pin (optional)
@@ -17,10 +16,9 @@ lcd.backLightOn()
 
 def internet_on():
 	try:
-		urllib.request.urlopen('http://www.google.com', timeout=2)
+		response=urllib.urlopen('http://google.com', timeout=2)
 		return True
 	except Exception:
-		traceback.print_exc()
 		return False
 
 while True:
@@ -28,11 +26,12 @@ while True:
 	if internet_on():
 		lcd.writeString([(s.connect(('8.8.8.8', 80)), s.getsockname()[0], s.close()) for s in [socket.socket(socket.AF_INET, socket.SOCK_DGRAM)]][0][1])
 		lcd.setPosition(2, 0) 
-		lcd.writeString("Connected as    ")
+		lcd.writeString("Connected to USC")
 		time.sleep(2.5)
 		lcd.setPosition(2, 0)
-		lcd.writeString("Status: Good    ")
+		lcd.writeString("Ayyy lmao       ")
 	else:
-		lcd.writeString("Error connecting")
+		lcd.writeString("Connection failed")
 	
 	time.sleep(5)
+
