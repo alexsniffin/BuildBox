@@ -60,6 +60,11 @@ def writeToScreen(msg):
             lcd.writeString(clearScreen)
         time.sleep(1.5)
 
+def showUserStats(users):
+    for index in range(0, len(users)):
+        writeToScreen("User " + users[index].name + " has " + users[index].succeeds + " succeeds, and " + users[index].fails + " fails. With a " + (users[index].succeeds / users[index].attempts * 100) + "% chance to succeed!")
+        time.sleep(3)
+
 if checkApiStatus():
     users = []
 
@@ -74,8 +79,8 @@ if checkApiStatus():
         lcd.clear()
         if checkApiStatus():
             writeToScreen("This build box is so amazing, such wow! :ok: lol we need hot pockets")
-            writeToScreen("Lorem ipsum dolor sit amet, consectetur adipiscing elit. In nec mattis ante. Sed rutrum vehicula vestibulum. In maximus nisl non neque laoreet viverra. Nam auctor erat sed est pretium mollis. Aliquam lobortis diam ac urna convallis scelerisque. Donec dictum nisl nec metus imperdiet, eget condimentum velit maximus. Nullam ligula eros, dictum sit amet nisl sit amet, dignissim iaculis purus. Nullam tortor nisi, semper in molestie interdum, porta a lorem. Curabitur vestibulum sodales erat, vitae viverra lacus iaculis non.")
+            showUserStats(users)
         else:
-            lcd.writeString("Error connecting")
+            writeToScreen("Error connecting")
 
         time.sleep(5)
