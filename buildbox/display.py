@@ -21,7 +21,7 @@ lcd.backLightOn()
 
 def checkApiStatus():
     try:
-        urllib.request.urlopen('http://wwww.build-box.test.herokuapp.com', timeout=5)
+        urllib.request.urlopen('https://build-box-test.herokuapp.com', timeout=5)
         return True
     except Exception:
         traceback.print_exc()
@@ -43,8 +43,15 @@ def chunkMsg(msg):
 
 
 def writeToScreen(msg):
-    return chunkMsg(msg) // TODO
+    msgChunkArr = chunkMsg(msg)
 
+    for line in range(0, len(msgChunkArr)):
+        lcd.setPosition(1, 0)
+        lcd.writeString(msgChunkArr[line])
+        if line + 1 < len(msgChunkArr):
+            lcd.setPosition(2, 0)
+            lcd.writeString((msgChunkArr[line + 1]))
+            time.sleep(1)
 
 if checkApiStatus():
     users = []
@@ -59,8 +66,8 @@ if checkApiStatus():
     while True:
         lcd.clear()
         if checkApiStatus():
-            lcd.setPosition(1, 0)
-            lcd.writeString(users[0].name)
+            writeToScreen("This build box is so amazing, such wow! :ok: lol we need hot pockets")
+            writeToScreen("Lorem ipsum dolor sit amet, consectetur adipiscing elit. In nec mattis ante. Sed rutrum vehicula vestibulum. In maximus nisl non neque laoreet viverra. Nam auctor erat sed est pretium mollis. Aliquam lobortis diam ac urna convallis scelerisque. Donec dictum nisl nec metus imperdiet, eget condimentum velit maximus. Nullam ligula eros, dictum sit amet nisl sit amet, dignissim iaculis purus. Nullam tortor nisi, semper in molestie interdum, porta a lorem. Curabitur vestibulum sodales erat, vitae viverra lacus iaculis non.")
         else:
             lcd.writeString("Error connecting")
 
