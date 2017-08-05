@@ -24,11 +24,15 @@ def chunkMsg(msg):
     out = []
 
     for line in range(0, lines):
-        if len(msg) - line * 16 - 16 < 16:
-            out.append(msg[(line * 16):])
-        else:
-            out.append(msg[(line * 16):-(len(msg) - line * 16 - 16)])
+        if len(msg) - (line * 16) < 16:
+            spacesNeeded = 16 - len(msg[(line * 16):])
+            lastMsgWithSpaces = msg[(line * 16):]
+            for i in range(0, spacesNeeded):
+                lastMsgWithSpaces = lastMsgWithSpaces + " "
 
+            out.append(lastMsgWithSpaces)
+        else:
+            out.append(msg[(line * 16):-(len(msg) - ((line * 16) + 16))])
     return out
 
 
@@ -43,4 +47,4 @@ if checkApiStatus():
                           data['users'][user]['succeeds'], data['users'][user]['fails']))
         print (users[0].name)
 
-print (chunkMsg('this is a long msg of characters'))
+print (chunkMsg('1234567891234567891234567891234567'))

@@ -18,6 +18,7 @@ lcd.command(lcd.CMD_Display_Control | lcd.OPT_Enable_Display)
 
 lcd.backLightOn()
 
+clearScreen = "                " # Clear the screen with empty string
 
 def checkApiStatus():
     try:
@@ -34,11 +35,14 @@ def chunkMsg(msg):
     out = []
 
     for line in range(0, lines):
-        if len(msg) - line * 16 - 16 < 16:
-            out.append(msg[(line * 16):])
+        if len(msg) - (line * 16) < 16:
+            spacesNeeded = 16 - len(msg[(line * 16):])
+            lastMsgWithSpaces = msg[(line * 16):]
+            for i in range(0, spacesNeeded):
+                lastMsgWithSpaces = lastMsgWithSpaces + " "
+            out.append(lastMsgWithSpaces)
         else:
-            out.append(msg[(line * 16):-(len(msg) - line * 16 - 16)])
-
+            out.append(msg[(line * 16):-(len(msg) - ((line * 16) + 16))])
     return out
 
 
@@ -51,7 +55,10 @@ def writeToScreen(msg):
         if line + 1 < len(msgChunkArr):
             lcd.setPosition(2, 0)
             lcd.writeString((msgChunkArr[line + 1]))
-            time.sleep(1)
+        else:
+            lcd.setPosition(2, 0)
+            lcd.writeString(clearScreen)
+        time.sleep(1.5)
 
 if checkApiStatus():
     users = []
