@@ -62,7 +62,7 @@ def writeToScreen(msg):
 
 def showUserStats(users):
     for index in range(0, len(users)):
-        writeToScreen("User " + users[index].name + " has " + users[index].succeeds + " succeeds, and " + users[index].fails + " fails. With a " + (users[index].succeeds / users[index].attempts * 100) + "% chance to succeed!")
+        writeToScreen("User " + users[index].name + " has " + str(users[index].succeeds) + " succeeds, and " + str(users[index].fails) + " fails. With a " + str((users[index].succeeds / users[index].attempts * 100)) + "% chance to succeed!")
         time.sleep(3)
 
 if checkApiStatus():
