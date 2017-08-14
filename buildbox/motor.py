@@ -1,44 +1,54 @@
 import RPi.GPIO as GPIO
-from time import sleep
-import requests
-import json
-
-GPIO.setmode(GPIO.BOARD)
-
-Motor1A = 16
-Motor1B = 18
-Motor1E = 22
-
-GPIO.setup(Motor1A, GPIO.OUT)
-GPIO.setup(Motor1B, GPIO.OUT)
-GPIO.setup(Motor1E, GPIO.OUT)
-
-lastState = ""
-
+import time
+ 
+GPIO.setmode(GPIO.BCM)
+ 
+enable_pin = 18
+coil_A_1_pin = 4
+coil_A_2_pin = 17
+coil_B_1_pin = 23
+coil_B_2_pin = 24
+ 
+GPIO.setup(enable_pin, GPIO.OUT)
+GPIO.setup(coil_A_1_pin, GPIO.OUT)
+GPIO.setup(coil_A_2_pin, GPIO.OUT)
+GPIO.setup(coil_B_1_pin, GPIO.OUT)
+GPIO.setup(coil_B_2_pin, GPIO.OUT)
+ 
+GPIO.output(enable_pin, 1)
+ 
+def forward(delay, steps):  
+  for i in range(0, steps):
+    setStep(1, 0, 1, 0)
+    time.sleep(delay)
+    setStep(0, 1, 1, 0)
+    time.sleep(delay)
+    setStep(0, 1, 0, 1)
+    time.sleep(delay)
+    setStep(1, 0, 0, 1)
+    time.sleep(delay)
+ 
+def backwards(delay, steps):  
+  for i in range(0, steps):
+    setStep(1, 0, 0, 1)
+    time.sleep(delay)
+    setStep(0, 1, 0, 1)
+    time.sleep(delay)
+    setStep(0, 1, 1, 0)
+    time.sleep(delay)
+    setStep(1, 0, 1, 0)
+    time.sleep(delay)
+ 
+  
+def setStep(w1, w2, w3, w4):
+  GPIO.output(coil_A_1_pin, w1)
+  GPIO.output(coil_A_2_pin, w2)
+  GPIO.output(coil_B_1_pin, w3)
+  GPIO.output(coil_B_2_pin, w4)
+ 
 while True:
-    state = json.loads(requests.get("https://build-box-test.herokuapp.com/state").content)['state']
-
-    if lastState != state:
-        lastState = state
-
-        print "Turning motor on"
-        GPIO.output(Motor1A, GPIO.HIGH)
-        GPIO.output(Motor1B, GPIO.LOW)
-        GPIO.output(Motor1E, GPIO.HIGH)
-
-        sleep(1)
-
-        print "Going backwards"
-        GPIO.output(Motor1A, GPIO.LOW)
-        GPIO.output(Motor1B, GPIO.HIGH)
-        GPIO.output(Motor1E, GPIO.HIGH)
-
-        sleep(.5)
-
-        print "Stopping motor"
-        GPIO.output(Motor1E, GPIO.LOW)
-        sleep(.001)
-
-GPIO.output(Motor1E, GPIO.LOW)
-
-GPIO.cleanup()
+  delay = raw_input("Delay between steps (milliseconds)?")
+  steps = raw_input("How many steps forward? ")
+  forward(int(delay) / 1000.0, int(steps))
+  steps = raw_input("How many steps backwards? ")
+  backwards(int(delay) / 1000.0, int(steps))
