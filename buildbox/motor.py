@@ -16,39 +16,63 @@ GPIO.setup(coil_B_1_pin, GPIO.OUT)
 GPIO.setup(coil_B_2_pin, GPIO.OUT)
  
 GPIO.output(enable_pin, 1)
+
+pass_next_state_steps = 160
+build_next_state_steps = 170
+fail_next_state_steps = 180
+
+pass_next_state = 'BUILD'
+build_next_state = 'FAIL'
+fail_next_state = 'PASS'
+
+current_state = 'FAIL'
+
+delay = 2
+
+
+def next_state():
+    global current_state, delay
+    if current_state == 'FAIL':
+        forward(delay, fail_next_state_steps)
+        current_state = fail_next_state
+    elif current_state == 'PASS':
+        forward(delay, pass_next_state_steps)
+        current_state = pass_next_state
+    elif current_state == 'BULD':
+        forward(delay, build_next_state_steps)
+        current_state = build_next_state
+
+
+def forward(delay, steps):
+    for i in range(0, steps):
+        set_step(1, 0, 1, 0)
+        time.sleep(delay)
+        set_step(0, 1, 1, 0)
+        time.sleep(delay)
+        set_step(0, 1, 0, 1)
+        time.sleep(delay)
+        set_step(1, 0, 0, 1)
+        time.sleep(delay)
  
-def forward(delay, steps):  
-  for i in range(0, steps):
-    setStep(1, 0, 1, 0)
-    time.sleep(delay)
-    setStep(0, 1, 1, 0)
-    time.sleep(delay)
-    setStep(0, 1, 0, 1)
-    time.sleep(delay)
-    setStep(1, 0, 0, 1)
-    time.sleep(delay)
- 
-def backwards(delay, steps):  
-  for i in range(0, steps):
-    setStep(1, 0, 0, 1)
-    time.sleep(delay)
-    setStep(0, 1, 0, 1)
-    time.sleep(delay)
-    setStep(0, 1, 1, 0)
-    time.sleep(delay)
-    setStep(1, 0, 1, 0)
-    time.sleep(delay)
+#def backwards(delay, steps):
+#  for i in range(0, steps):
+#    set_step(1, 0, 0, 1)
+#    time.sleep(delay)
+#    set_step(0, 1, 0, 1)
+#    time.sleep(delay)
+#    set_step(0, 1, 1, 0)
+#    time.sleep(delay)
+#    set_step(1, 0, 1, 0)
+#    time.sleep(delay)
  
   
-def setStep(w1, w2, w3, w4):
-  GPIO.output(coil_A_1_pin, w1)
-  GPIO.output(coil_A_2_pin, w2)
-  GPIO.output(coil_B_1_pin, w3)
-  GPIO.output(coil_B_2_pin, w4)
+def set_step(w1, w2, w3, w4):
+    GPIO.output(coil_A_1_pin, w1)
+    GPIO.output(coil_A_2_pin, w2)
+    GPIO.output(coil_B_1_pin, w3)
+    GPIO.output(coil_B_2_pin, w4)
  
 while True:
-  delay = 2
-  steps = raw_input("How many steps forward? ")
-  forward(int(delay) / 1000.0, int(steps))
-  steps = raw_input("How many steps backwards? ")
-  backwards(int(delay) / 1000.0, int(steps))
+    state_wanted = raw_input("What state do you want? ")
+    while current_state != state_wanted.upper():
+        next_state()
