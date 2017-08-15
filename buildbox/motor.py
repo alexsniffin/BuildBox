@@ -27,7 +27,7 @@ fail_next_state = 'PASS'
 
 current_state = 'FAIL'
 
-delay = 2
+delay = 2 / 1000.0
 
 
 def forward(steps):
