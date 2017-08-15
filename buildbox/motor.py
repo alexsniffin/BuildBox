@@ -30,20 +30,7 @@ current_state = 'FAIL'
 delay = 2
 
 
-def next_state():
-    global current_state, delay
-    if current_state == 'FAIL':
-        forward(delay, fail_next_state_steps)
-        current_state = fail_next_state
-    elif current_state == 'PASS':
-        forward(delay, pass_next_state_steps)
-        current_state = pass_next_state
-    elif current_state == 'BULD':
-        forward(delay, build_next_state_steps)
-        current_state = build_next_state
-
-
-def forward(delay, steps):
+def forward(steps):
     for i in range(0, steps):
         set_step(1, 0, 1, 0)
         time.sleep(delay)
@@ -53,7 +40,20 @@ def forward(delay, steps):
         time.sleep(delay)
         set_step(1, 0, 0, 1)
         time.sleep(delay)
- 
+
+
+def next_state():
+    global current_state, delay
+    if current_state == 'FAIL':
+        forward(fail_next_state_steps)
+        current_state = fail_next_state
+    elif current_state == 'PASS':
+        forward(pass_next_state_steps)
+        current_state = pass_next_state
+    elif current_state == 'BUILD':
+        forward(build_next_state_steps)
+        current_state = build_next_state
+
 #def backwards(delay, steps):
 #  for i in range(0, steps):
 #    set_step(1, 0, 0, 1)
