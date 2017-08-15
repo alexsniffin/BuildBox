@@ -43,7 +43,7 @@ def forward(steps):
 
 
 def next_state():
-    global current_state, delay
+    global current_state
     if current_state == 'FAIL':
         forward(fail_next_state_steps)
         current_state = fail_next_state
